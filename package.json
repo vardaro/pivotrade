@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "mathjs": "^6.6.1",
     "yahoo-finance": "^0.3.6"
   }
 }
