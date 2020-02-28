@@ -1,7 +1,11 @@
 const moment = require('moment');
+const uniqid = require('uniqid');
 
 class Position {
+  
   constructor(quantity, limit, stop_loss, time_in_force, type, date) {
+    this.id = uniqid();
+
     this.quantity = quantity;
     this.limit = limit;
     this.stop_loss = stop_loss;
