@@ -1,8 +1,8 @@
-const yahoo = require("yahoo-finance");
-
 const Position = require("./position");
+const historical_data = require('./util/historical_data')
 
 class Session {
+  
   constructor(data) {
     // Symbol to trade on
     if (!data.symbol) {
@@ -29,8 +29,8 @@ class Session {
     this.holdings = [];
     this.closed_positions = [];
 
-    this.realized_profit_loss = 0;
-    this.unrealized_profit_loss = 0;
+    this.realized_pl = 0;
+    this.unrealized_pl = 0;
   }
 
   /**
@@ -65,13 +65,24 @@ class Session {
     let upl = 0;
     if (this.holdings.length) {
       this.holdings.map(cur => {
-        upl += cur.unrealized_profit_loss(price);
+        upl = upl + cur.unrealized_profit_loss(price);
       });
     }
-
-
     this.account_value = this.capital + upl;
-    this.unrealized_profit_loss = upl;
+    this.unrealized_pl = upl;
+  }
+
+  update_indicators(price) {
+    let update = {};
+    this.indicators.map(cur_indi => {
+      let name = cur_indi[0];
+      let fn = cur_indi[1];
+      let val = fn.next(price);
+
+      update[name] = val;
+    });
+
+    return update;
   }
 
   buy(limit, quantity, stop_loss, time_in_force) {
@@ -87,7 +98,6 @@ class Session {
     this.capital = this.capital - amt;
 
     this.holdings.push(p);
-
 
     console.log(`BUY ${quantity} ${this.symbol} at ${limit}`);
   }
@@ -110,10 +120,10 @@ class Session {
     this.closed_positions.push(position);
 
     // Updated realized P/L
-    this.realized_profit_loss += position.realized_pl;
+    this.realized_pl = this.realized_pl + position.realized_pl;
 
     // Capital = Capital + (price * qty)
-    this.capital += position.quantity * limit;
+    this.capital = this.capital + (position.quantity * limit);
 
     console.log(`SELL ${quantity} ${this.symbol} at ${limit}`);
 
@@ -122,28 +132,21 @@ class Session {
   async backtest(strategy) {
     let indicators = {};
 
-    let data = await yahoo.historical({
-      symbol: this.symbol,
-      from: this.start_date,
-      to: this.end_date,
-      period: "d"
-    });
+    let ohlcv = await historical_data(this.symbol, this.start_date, this.end_date, "d");
 
-    data.map(price => {
+    ohlcv.map(price => {
 
-      this.indicators.map(cur_indi => {
-        let name = cur_indi[0];
-        let fn = cur_indi[1];
-        let val = fn.next(price);
+      // Update indicators on new price tick
+      indicators = this.update_indicators(price);
 
-        indicators[name] = val;
-      });
+      // Update unrealized pl's
+      this.update_account_value(price.close);
 
-      this.update_account_value(price);
-
+      // Execute user's strategy
       strategy(price, indicators);
-      console.log("Account value " + this.capital)
+
     });
+
     console.log(this);
 
   }

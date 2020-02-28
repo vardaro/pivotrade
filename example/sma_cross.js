@@ -16,7 +16,7 @@ session.backtest((price, indicators) => {
     let SMA20 = indicators.SMA20;
     let SMA50 = indicators.SMA50;
     
-    // If flat, and fast > slow, long 100% into holdings
+    // If flat, and fast < slow, long 100% into holdings
     if (session.holdings.length == 0) {
         if (SMA20 < SMA50) {
             let num_shares = Math.floor(session.capital / price.close);
