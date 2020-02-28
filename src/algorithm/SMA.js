@@ -33,7 +33,7 @@ class SMA {
     }
 
     next(price, precision=2) {
-        let result = this.gen.next(price.close).value;
+        let result = this.gen.next(price).value;
 
         result = result.toFixed(precision);
         return result;

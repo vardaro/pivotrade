@@ -9,7 +9,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "chalk": "^3.0.0",
     "mathjs": "^6.6.1",
+    "moment": "^2.24.0",
     "yahoo-finance": "^0.3.6"
   }
 }
