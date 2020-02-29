@@ -20,7 +20,6 @@ session.backtest((price, indicators, positions) => {
     
     // Price is provided in OHLCV format
     let cur_price = price.close;
-
     if (positions.length === 0) {
         if (SMA20 < SMA50) {
             let num_shares = Math.floor(session.capital / cur_price);
@@ -32,8 +31,8 @@ session.backtest((price, indicators, positions) => {
 
     if (positions.length === 1) {
         let position = positions[0];
-        if (SMA20 > SMA50 && position.limit < cur_price) {
-            session.sell(0, cur_price, position.quantity, "gtc");
+        if (SMA20 > SMA50) {
+            session.sell(position.id, cur_price, position.quantity, "gtc");
         }
     }
 

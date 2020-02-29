@@ -24,7 +24,6 @@ class SMA {
 
                 result = sum / this.period;
                 this.history.push(close);
-
             }
             this.counter++;
             close = yield result;
