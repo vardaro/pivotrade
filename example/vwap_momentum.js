@@ -11,7 +11,7 @@ const VWAP = Algorithm.VWAP;
  * Enter a long positon, close position at 5% profitability.
  */
 const session = new Session({
-  name: "VWAP Support",
+  name: "VWAP Momentum",
   symbol: "SPY",
   capital: 100000,
   start_date: "2010-01-01",
@@ -29,7 +29,6 @@ session.backtest((price, account, indicators) => {
     if (VWAP > cur_price) {
       let num_shares = Math.floor(account.capital / cur_price);
       session.buy({ limit: cur_price, quantity: num_shares});
-      console.log(VWAP)
     }
     return;
   }
