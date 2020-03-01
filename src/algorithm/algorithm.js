@@ -1,3 +1,4 @@
 module.exports = {
-    SMA: require('./SMA')
+    SMA: require('./SMA'),
+    VWAP: require('./VWAP');
 }

@@ -64,14 +64,10 @@ class Session {
     payload.date = state.price.date;
     this.store.dispatch(actions.positions.open(payload));
 
-    // Update cash on hand
     state = this.store.getState();
-    let position_id = state.positions.recent;
-    let position = state.positions.open[position_id];
-    let money = {};
-    money.capital = round(state.money.capital - position.cost_basis);
-
-    this.store.dispatch(actions.money.update_money(money));
+    let id = state.positions.recent;
+    let position = state.positions.open[id];
+    this.on_position_open(id)
 
     console.log(
       `${position.open_time} BUY ${position.quantity} ${state.settings.symbol} @ ${position.limit}. STOP ${position.stop_loss}. RISK ${position.risk}`
@@ -104,9 +100,40 @@ class Session {
 
     this.store.dispatch(actions.positions.close(payload));
 
+    // Lot's of stuff changes when user closes position
+
+    this.on_position_close(payload.id);
+
+    console.log(
+      `${position.close_time} SLL ${position.quantity} ${state.settings.symbol} @ ${payload.limit}. P/L ${position.realized_pl}\n`
+    );
+  }
+
+  /**
+   * Update cash on hand values upon opening of a position
+   * @param {number} position_id 
+   */
+  on_position_open(position_id) {
+    // Update cash on hand
+    let state = this.store.getState();
+    let position = state.positions.open[position_id];
+    let money = {};
+    money.capital = round(state.money.capital - position.cost_basis);
+
+    this.store.dispatch(actions.money.update_money(money));
+  }
+
+  /**
+   * Upon closing a position, update account value, cash on hand, realized p/l
+   * Recompute strategy performance metrics
+   *
+   * Dispatch all changes to state
+   * @param {Number} position_id
+   */
+  on_position_close(position_id) {
     // Update the account
-    state = this.store.getState();
-    position = state.positions.closed[payload.id];
+    let state = this.store.getState();
+    let position = state.positions.closed[position_id];
     let money = {};
 
     // Updated realized P/L
@@ -116,7 +143,7 @@ class Session {
 
     // Capital = Capital + (close price * qty)
     money.capital = round(
-      state.money.capital + position.quantity * payload.limit
+      state.money.capital + position.quantity * position.close_price
     );
 
     this.store.dispatch(actions.money.update_money(money));
@@ -150,10 +177,6 @@ class Session {
     );
 
     this.store.dispatch(actions.performance.update_performance(stats));
-
-    console.log(
-      `${position.close_time} SLL ${position.quantity} ${state.settings.symbol} @ ${payload.limit}. P/L ${position.realized_pl}\n`
-    );
   }
 
   /**

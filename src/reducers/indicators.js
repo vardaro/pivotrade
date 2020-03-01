@@ -28,7 +28,7 @@ const set_indicators = (state, payload) => {
  * @param {object} payload Price object
  */
 const update_indicators = (state, payload) => {
-  let price = payload.close;
+  let price = payload;
   if (!price) throw Error("Error communicating price tick to indicators");
   
   let ans = {

@@ -23,7 +23,7 @@ session.backtest((price, account, indicators) => {
   if (account.positions.length === 0) {
     if (SMA20 > SMA50) {
       let num_shares = Math.floor(account.capital / cur_price);
-      let stop_loss = 0.9 * cur_price;
+      let stop_loss = 0.90 * cur_price;
 
       session.buy({ limit: cur_price, quantity: num_shares, stop_loss: stop_loss});
     }

@@ -1,5 +1,8 @@
 const round = require('../util/round');
 
+/**
+ * SMA(n) = sum(P1 + P2 + ... Pn) / n
+ */
 class SMA {
     constructor(period) {
         this.period = period;
@@ -34,7 +37,7 @@ class SMA {
     }
 
     next(price, precision=2) {
-        let result = this.gen.next(price).value;
+        let result = this.gen.next(price.close).value;
 
         result = round(result, precision)
         return result;

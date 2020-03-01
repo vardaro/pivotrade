@@ -8,6 +8,7 @@ class Position {
 
     this.quantity = quantity;
     this.limit = limit;
+    this.close_price = 0.0;
     this.stop_loss = round(stop_loss);
     this.time_in_force = time_in_force;
     this.type = type;
@@ -24,6 +25,7 @@ class Position {
   }
 
   close(close_price, qty, time_in_force, date) {
+    this.close_price = close_price;
     this.realized_pl = round((close_price * qty) - (this.limit * qty));
 
     this.open = false;
