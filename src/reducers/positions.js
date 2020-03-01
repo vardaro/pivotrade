@@ -7,6 +7,11 @@ const initial_state = {
   recent: -1 // Most recently added position
 };
 
+/**
+ * Opens a position
+ * @param {obj} state state
+ * @param {obj} payload new data
+ */
 const open = (state, payload) => {
   let position = new Position(
     payload.quantity,
@@ -17,6 +22,7 @@ const open = (state, payload) => {
     payload.date
   );
 
+  // Add the position to state.open
   let id = position.id;
 
   let entry = {
@@ -31,17 +37,26 @@ const open = (state, payload) => {
   return Object.assign({}, state, entry);
 };
 
+/**
+ * Closes an open position
+ *
+ * @param {obj} state state
+ * @param {obj} payload new data
+ */
 const close = (state, payload) => {
   let id = payload.id;
 
   let position = state.open[id];
 
+  // Close position
   position.close(
     payload.limit,
     payload.quantity,
     payload.time_in_force || "GTC",
     payload.date
   );
+
+  //Remove from state.open, add to state.closed
   delete state.open[id];
   let result = {
     open: {

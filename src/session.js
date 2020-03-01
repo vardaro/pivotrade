@@ -1,4 +1,3 @@
-const Position = require("./position");
 const historical_data = require("./util/historical_data");
 const round = require("./util/round");
 
@@ -46,6 +45,15 @@ class Session {
     this.store.dispatch(actions.indicators.set_indicators(indicators));
   }
 
+  /**
+   * Simulates a buy
+   * This function will not simulate a covering a short, shorting is delagated to a different, but similar, buy function.
+   *
+   * Sends payload to the action. The corresponding reducer opens a position and adds it to the state
+   * Updates account value numbers and updates the state
+   *
+   * @param {object} payload
+   */
   buy(payload) {
     if (!payload.quantity) throw Error("Order quantity required");
 
@@ -70,6 +78,16 @@ class Session {
     );
   }
 
+  /**
+   * Simulates a sell.
+   * This function will not simulate a short, shorting is delagated to a different, but similar, sell function.
+   *
+   * Sends payload to the action. The corresponding reducers closed the position on behalf of the user.
+   * Updates P/L numbers accordingly, and updates the state.
+   *
+   * Updates account statistics
+   * @param {object} payload
+   */
   sell(payload) {
     if (!payload.id) throw Error("Position ID required");
 
@@ -79,15 +97,18 @@ class Session {
 
     let state = this.store.getState();
 
+    // Update the state to close the position
     let position = state.positions.open[payload.id];
     payload.date = state.price.date;
     if (!position) throw Error("Invalid position ID");
 
     this.store.dispatch(actions.positions.close(payload));
 
+    // Update the account
     state = this.store.getState();
     position = state.positions.closed[payload.id];
     let money = {};
+
     // Updated realized P/L
     money.realized_gain = round(
       state.money.realized_gain + position.realized_pl
@@ -101,11 +122,17 @@ class Session {
     this.store.dispatch(actions.money.update_money(money));
 
     console.log(
-      `${position.close_time} SLL ${position.quantity} ${state.settings.symbol} @ ${payload.limit}. P/L ${position.realized_pl}`
+      `${position.close_time} SLL ${position.quantity} ${state.settings.symbol} @ ${payload.limit}. P/L ${position.realized_pl}\n`
     );
-
   }
 
+  /**
+   * Updates the states account value, depending on cash on hand and equitable assets.
+   *
+   * Recomputes unrealized P/L on open positions with newest price data.
+   * Recompute ROI depending on new price data
+   *
+   */
   update_account() {
     let state = this.store.getState();
 
@@ -135,6 +162,14 @@ class Session {
     this.store.dispatch(actions.money.update_money(money));
   }
 
+  /**
+   * If the user defined a stop loss, this function will
+   * trigger the stop loss if the price reaches below support/above resistance.
+   *
+   * This closes the users position, incurring a loss.
+   *
+   * Only support's one stop loss currently.
+   */
   trigger_stop_loss() {
     let state = this.store.getState();
 
@@ -143,14 +178,27 @@ class Session {
     if (cur_price < state.positions.stop_losses) {
       let id = state.positions.recent;
       let position = state.positions.open[id];
-      console.log(
-        `Trigger Stop Loss: @ ${state.positions.stop_losses}`
-      );
+      console.log(`Trigger Stop Loss: @ ${state.positions.stop_losses}`);
 
-      this.sell({id: id, quantity: position.quantity, limit: cur_price});
+      this.sell({ id: id, quantity: position.quantity, limit: cur_price });
     }
   }
 
+  /**
+   * Simulates the users strategy on historical data.
+   *
+   * On each price tick, the user is presented with:
+   * 1. Latest candle
+   * 2. Current positions
+   * 3. Account metadata
+   * 4. Indicators
+   * 5. Patterns
+   *
+   * The user leverages this information to determine when to open/exit positions
+   * using session.buy and session.sell.
+   *
+   * @param {fn} strategy
+   */
   async backtest(strategy) {
     if (typeof strategy !== "function") {
       throw Error("Strategy must be a function");

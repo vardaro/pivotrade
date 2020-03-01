@@ -23,7 +23,7 @@ const set_indicators = (state, payload) => {
 };
 
 /**
- *
+ * Progresses the generator for each indicator, storing the value in state.values.
  * @param {state} state
  * @param {object} payload Price object
  */

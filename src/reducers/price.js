@@ -9,6 +9,11 @@ const initial_state = {
   date: ""
 };
 
+/**
+ * Round's out price numbers to 2 digits, returns state
+ * @param {obj} state 
+ * @param {obj} payload 
+ */
 const tick = (state, payload) => {
   let data = {};
 
