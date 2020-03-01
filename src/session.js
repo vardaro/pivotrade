@@ -59,6 +59,8 @@ class Session {
 
     if (!payload.limit) throw Error("Order limit is required");
 
+    if (!payload.stop_loss) payload.stop_loss = 0;
+
     // Push position to the state
     let state = this.store.getState();
     payload.date = state.price.date;
@@ -289,6 +291,7 @@ class Session {
         positions: Object.values(state.positions.open),
         ...state.money
       };
+      // console.log(state.indicators.values)
       strategy(state.price, account, state.indicators.values);
     }
 
