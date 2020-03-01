@@ -175,7 +175,7 @@ class Session {
     stats.average_risk_trade = round(stats.total_risk / stats.num_trades);
 
     stats.average_profit_trade = round(
-      state.money.unrealized_gain / stats.num_trades
+      state.money.realized_gain / stats.num_trades
     );
 
     this.store.dispatch(actions.performance.update_performance(stats));
