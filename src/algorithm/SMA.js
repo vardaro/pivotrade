@@ -1,3 +1,5 @@
+const round = require('../util/round');
+
 class SMA {
     constructor(period) {
         this.period = period;
@@ -34,7 +36,7 @@ class SMA {
     next(price, precision=2) {
         let result = this.gen.next(price).value;
 
-        result = result.toFixed(precision);
+        result = round(result, precision)
         return result;
     }
 }
