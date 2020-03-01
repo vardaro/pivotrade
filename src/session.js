@@ -121,6 +121,36 @@ class Session {
 
     this.store.dispatch(actions.money.update_money(money));
 
+    // Update statistics
+    state = this.store.getState();
+    let stats = {
+      num_trades: state.performance.num_trades + 1
+    };
+
+    if (position.realized_pl > 0) {
+      stats.num_wins = state.performance.num_wins + 1;
+      stats.biggest_profit = Math.max(
+        state.performance.biggest_profit,
+        position.realized_pl
+      );
+      stats.win_rate = round((stats.num_wins / stats.num_trades) * 100);
+    } else {
+      stats.num_losses = state.performance.num_losses + 1;
+      stats.biggest_loss = Math.min(
+        state.performance.biggest_loss,
+        position.realized_pl
+      );
+    }
+
+    stats.total_risk = state.performance.total_risk + position.risk;
+    stats.average_risk_trade = round(stats.total_risk / stats.num_trades);
+
+    stats.average_profit_trade = round(
+      state.money.unrealized_gain / stats.num_trades
+    );
+
+    this.store.dispatch(actions.performance.update_performance(stats));
+
     console.log(
       `${position.close_time} SLL ${position.quantity} ${state.settings.symbol} @ ${payload.limit}. P/L ${position.realized_pl}\n`
     );
@@ -157,7 +187,9 @@ class Session {
     money.account_value = money.unrealized_gain + state.money.capital;
 
     // Recompute ROI
-    money.roi = (state.money.realized_gain / state.money.initial_capital) * 100;
+    money.roi = round(
+      (state.money.realized_gain / state.money.initial_capital) * 100
+    );
 
     this.store.dispatch(actions.money.update_money(money));
   }

@@ -21,7 +21,7 @@ session.backtest((price, account, indicators) => {
   // Price is provided in OHLCV format
   let cur_price = price.close;
   if (account.positions.length === 0) {
-    if (SMA20 < SMA50) {
+    if (SMA20 > SMA50) {
       let num_shares = Math.floor(account.capital / cur_price);
       let stop_loss = 0.9 * cur_price;
 
@@ -32,7 +32,7 @@ session.backtest((price, account, indicators) => {
 
   if (account.positions.length === 1) {
     let position = account.positions[0];
-    if (SMA20 > SMA50) {
+    if (SMA20 < SMA50) {
       session.sell({ id: position.id, limit: cur_price, quantity: position.quantity });
     }
   }

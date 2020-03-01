@@ -9,6 +9,7 @@ const initial_state = {
     biggest_loss: 0.0,
     biggest_profit: 0.0,
     average_profit_trade: 0.0,
+    total_risk: 0.0,
     average_risk_trade: 0.0
 }
 

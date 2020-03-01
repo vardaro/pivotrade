@@ -1,9 +1,10 @@
-const performance = payload => {
-    type: 'UPDATE_PERFORMANCE',
+const update_performance = payload => {
+  return {
+    type: "UPDATE_PERFORMANCE",
     payload
+  };
 };
 
 module.exports = {
-    performance
-}
-
+  update_performance
+};
