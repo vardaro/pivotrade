@@ -3,8 +3,8 @@ const Position = require("../position");
 const initial_state = {
   open: {},
   closed: {},
-  stop_losses: [],
-  recent: -1
+  stop_losses: 0.0, // Only supports 1 stop loss at a time...
+  recent: -1 // Most recently added position
 };
 
 const open = (state, payload) => {
@@ -24,7 +24,8 @@ const open = (state, payload) => {
       ...state.open,
       [id]: position
     },
-    recent: id
+    recent: id,
+    stop_losses: position.stop_loss
   };
 
   return Object.assign({}, state, entry);
@@ -35,7 +36,12 @@ const close = (state, payload) => {
 
   let position = state.open[id];
 
-  position.close(payload.limit, payload.quantity, payload.time_in_force || "GTC", payload.date);
+  position.close(
+    payload.limit,
+    payload.quantity,
+    payload.time_in_force || "GTC",
+    payload.date
+  );
   delete state.open[id];
   let result = {
     open: {
@@ -45,8 +51,9 @@ const close = (state, payload) => {
       ...state.closed,
       [id]: position
     },
-    recent: -1
-  }  
+    recent: -1,
+    stop_losses: 0.0
+  };
 
   return Object.assign({}, state, result);
 };

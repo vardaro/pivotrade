@@ -1,6 +1,6 @@
 const moment = require('moment');
 const uniqid = require('uniqid');
-
+const round = require('./util/round');
 class Position {
   
   constructor(quantity, limit, stop_loss, time_in_force, type, date) {
@@ -8,7 +8,7 @@ class Position {
 
     this.quantity = quantity;
     this.limit = limit;
-    this.stop_loss = stop_loss;
+    this.stop_loss = round(stop_loss);
     this.time_in_force = time_in_force;
     this.type = type;
 
@@ -17,14 +17,14 @@ class Position {
     this.open_time = moment(date).format('YYYY-MM-DD');
     this.close_time = null;
 
-    this.risk = (this.stop_loss - this.limit) * quantity;
+    this.risk = round((this.stop_loss - this.limit) * quantity);
     this.realized_pl = 0;
     this.unrealized_pl = 0;
     this.open = true;
   }
 
   close(close_price, qty, time_in_force, date) {
-    this.realized_pl += close_price * qty - this.limit * qty;
+    this.realized_pl = round((close_price * qty) - (this.limit * qty));
 
     this.open = false;
     this.close_time = moment(date).format('YYYY-MM-DD');
@@ -32,7 +32,7 @@ class Position {
   }
 
   unrealized_profit_loss(price) {
-    this.unrealized_pl = this.quantity * price;
+    this.unrealized_pl = round(this.quantity * price);
     return this.unrealized_pl;
   }
 }

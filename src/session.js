@@ -7,8 +7,6 @@ const actions = require("./actions/index");
 
 const createStore = require("redux").createStore;
 
-// const store = createStore(rootReducer);
-
 class Session {
   store = createStore(rootReducer);
 
@@ -68,7 +66,7 @@ class Session {
     this.store.dispatch(actions.money.update_money(money));
 
     console.log(
-      `${position.open_time} BUY ${position.quantity} ${state.settings.symbol} @ ${position.limit}  - STOP ${position.stop_loss}`
+      `${position.open_time} BUY ${position.quantity} ${state.settings.symbol} @ ${position.limit}. STOP ${position.stop_loss}. RISK ${position.risk}`
     );
   }
 
@@ -87,18 +85,25 @@ class Session {
 
     this.store.dispatch(actions.positions.close(payload));
 
-    let money = {}
+    state = this.store.getState();
+    position = state.positions.closed[payload.id];
+    let money = {};
     // Updated realized P/L
-    money.realized_gain = round(state.money.realized_gain + position.realized_pl);
+    money.realized_gain = round(
+      state.money.realized_gain + position.realized_pl
+    );
 
-    // Capital = Capital + (price * qty)
-    money.capital = round(state.money.capital + (position.quantity * payload.limit));
+    // Capital = Capital + (close price * qty)
+    money.capital = round(
+      state.money.capital + position.quantity * payload.limit
+    );
 
     this.store.dispatch(actions.money.update_money(money));
 
     console.log(
-      `${position.close_time} SLL ${position.quantity} ${state.settings.symbol} @ ${payload.limit}`
+      `${position.close_time} SLL ${position.quantity} ${state.settings.symbol} @ ${payload.limit}. P/L ${position.realized_pl}`
     );
+
   }
 
   update_account() {
@@ -107,7 +112,6 @@ class Session {
     let cur_price = state.price.close;
     let open = Object.values(state.positions.open);
 
-    
     let money = {
       unrealized_gain: 0.0,
       account_value: 0.0,
@@ -117,7 +121,8 @@ class Session {
     // Recompute unrealized P/L
     if (open.length) {
       for (let i = 0; i < open.length; i++) {
-        money.unrealized_gain = money.unrealized_gain + open[i].unrealized_profit_loss(cur_price);
+        money.unrealized_gain =
+          money.unrealized_gain + open[i].unrealized_profit_loss(cur_price);
       }
     }
 
@@ -128,7 +133,22 @@ class Session {
     money.roi = (state.money.realized_gain / state.money.initial_capital) * 100;
 
     this.store.dispatch(actions.money.update_money(money));
+  }
 
+  trigger_stop_loss() {
+    let state = this.store.getState();
+
+    let cur_price = state.price.close;
+
+    if (cur_price < state.positions.stop_losses) {
+      let id = state.positions.recent;
+      let position = state.positions.open[id];
+      console.log(
+        `Trigger Stop Loss: @ ${state.positions.stop_losses}`
+      );
+
+      this.sell({id: id, quantity: position.quantity, limit: cur_price});
+    }
   }
 
   async backtest(strategy) {
@@ -155,6 +175,9 @@ class Session {
 
       // Update account
       this.update_account();
+
+      // Check stop loss triggers
+      this.trigger_stop_loss();
 
       state = this.store.getState();
 
