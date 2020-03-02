@@ -12,7 +12,19 @@ class MACDOutput {
 }
 
 /**
+ * https://www.investopedia.com/ask/answers/122414/what-moving-average-convergence-divergence-macd-formula-and-how-it-calculated.asp
  *
+ * The MACD consists of three values:
+ * 1. MACD line
+ * 2. Signal line
+ * 3. Histogram
+ * 
+ * The MACD is calculated:
+ * 
+ * MACD = EMA(12) - EMA(26);
+ * Signal = EMA(9, MACD)   (The exponetial moving average of the MACD)
+ * Histogram = MACD - Signal 
+ * 
  */
 class MACD {
   constructor(fast_period = 12, slow_period = 26, signal_period = 9) {
@@ -42,8 +54,8 @@ class MACD {
       if (fast_ema === 0 || slow_ema === 0) {
         price = yield 0;
       } else {
-        signal = fast_ema - slow_ema;
-        macd = macd.next(signal);
+        macd = fast_ema - slow_ema;
+        signal = signal.next(macd);
         histogram = macd - signal;
         // If the MACD finally has data, return it to user
         // Else, return 0
