@@ -30,7 +30,7 @@ class SMA {
         // Get the average
         result = (sum + close) / this.period;
 
-        // Remove the oldest entry. Remove the oldest entry from sum, add the newest entry to sum
+        // Remove the oldest entry from history. Remove the oldest entry from sum, add the newest entry to sum
         let front = this.history.shift();
         sum = sum - front + close;
 
