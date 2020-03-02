@@ -6,7 +6,7 @@ const round = require("../util/round");
 class SMA {
   constructor(period) {
     this.period = period;
-    this.counter = 0;
+    this.counter = 1;
     this.history = [];
 
     this.gen = this.calculate();
@@ -18,18 +18,23 @@ class SMA {
     let result;
     let close = yield;
     while (true) {
+      // Add the newest entry to the window
+      this.history.push(close);
+
       if (this.counter < this.period) {
-        this.history.push(close);
         sum += close;
         result = 0;
+        this.counter++;
+
       } else {
+        // Get the average
+        result = (sum + close) / this.period;
+
+        // Remove the oldest entry. Remove the oldest entry from sum, add the newest entry to sum
         let front = this.history.shift();
         sum = sum - front + close;
 
-        result = sum / this.period;
-        this.history.push(close);
       }
-      this.counter++;
       close = yield result;
     }
   }

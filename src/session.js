@@ -7,9 +7,10 @@ const actions = require("./actions/index");
 const createStore = require("redux").createStore;
 
 class Session {
-  store = createStore(rootReducer);
 
   constructor(data) {
+    this.store = createStore(rootReducer);
+
     const settings = {};
     const money = {};
     const indicators = {};
