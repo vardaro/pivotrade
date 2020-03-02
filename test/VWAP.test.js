@@ -3,7 +3,7 @@ const VWAP = require("../src/algorithm/VWAP");
 /**
  * EMA=(P(t) - EMA(y)) * weight + EMA(y)
  */
-test("computes EMA(5) for price set", () => {
+test("computes VWAP for price set", () => {
   let data = [
     {
       close: 14,
@@ -45,7 +45,7 @@ test("computes EMA(5) for price set", () => {
 
   let ans = [0, 0, 0, 0, 3.42, 6.75, 15.9, 14.63];
 
-  let gen = new EMA(5);
+  let gen = new VWAP();
   let result = [];
   data.map(cur => {
     let price = {
