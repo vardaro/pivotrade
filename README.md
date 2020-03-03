@@ -1,13 +1,21 @@
-# Pivotrade
+## Pivotrade
 
-Pivotrade is a Node.js backtesting framework for simulating trading strategies on historical quotes.
+Pivotrade is a Node.js backtesting framework for simulating trading strategies on historical quotes. 
 
-Here is an example implementation of a classic SMA crossover strategy. A strategy that involves:
+Pivotrades requires only a callback function and will handle historical price data, performance monitoring, and state management, giving you freedom to focus more on strategy and less on infrastructure.
+
+## Getting Started
+
+Here is an example implementation of a classic Simple Moving Average (SMA) crossover strategy. A strategy that involves:
 - Buying N shares of a security when it's 20 day moving average crosses above its 50 day moving average.
 
-- Selling N when its 20 day average falls below the 50 day average.
+- Selling N shares of a security when its 20 day average falls below the 50 day average.
+
+Also known as the "Hello World" of algotrading.
 
 ```javascript
+// node example/sma_cross.js
+
 const Session = require("../index").Session;
 const Algorithm = require("../index").Algorithm;
 const SMA = Algorithm.SMA;
@@ -28,7 +36,6 @@ session.backtest((price, account, indicators) => {
   let SMA20 = indicators.SMA20;
   let SMA50 = indicators.SMA50;
 
-  // Price is provided as a Candlestick object
   let cur_price = price.close;
   if (account.positions.length === 0) {
     if (SMA20 > SMA50) {
@@ -46,3 +53,4 @@ session.backtest((price, account, indicators) => {
   }
 });
 ```
+The user has the power to configure the technical indicators provided by the framework. These indicators are updated on each candlestick and get injected into the context of the backtesting function, alongside other metadata about the user, to assist the user in generating <strong>buy</strong> and <strong>sell</strong> signals to the framework.
