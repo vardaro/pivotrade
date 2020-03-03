@@ -2,16 +2,16 @@
 
 Pivotrade is a Node.js backtesting framework for simulating trading strategies on historical quotes. 
 
-Pivotrades requires only a callback function and will handle historical price data, performance monitoring, and state management, giving you freedom to focus more on strategy and less on infrastructure.
+Pivotrades requires only a callback function and will handle historical price data, performance monitoring, and state management, giving you the freedom to focus more on strategy and less on infrastructure.
 
 ## Getting Started
 
-Here is an example implementation of a classic Simple Moving Average (SMA) crossover strategy. A strategy that involves:
-- Buying N shares of a security when it's 20 day moving average crosses above its 50 day moving average.
+Here is an example implementation of a classic Simple Moving Average (SMA) crossover strategy trading on the S&P ETF. A strategy that involves:
+- Buying <strong>N</strong> shares of a security when it's 20 day moving average crosses above its 50 day moving average.
 
-- Selling N shares of a security when its 20 day average falls below the 50 day average.
+- Selling <strong>N</strong> shares of a security when its 20 day average falls below the 50 day average.
 
-Also known as the "Hello World" of algotrading.
+Also known as the "Hello World" of algotrading!
 
 ```javascript
 // node example/sma_cross.js
@@ -53,4 +53,10 @@ session.backtest((price, account, indicators) => {
   }
 });
 ```
-The user has the power to configure the technical indicators provided by the framework. These indicators are updated on each candlestick and get injected into the context of the backtesting function, alongside other metadata about the user, to assist the user in generating <strong>buy</strong> and <strong>sell</strong> signals to the framework.
+The user has the power to configure the technical indicators provided by the framework. These indicators are dynamically injected into the context of the backtesting function, alongside other metadata about the trading session, to assist the user in generating <strong>buy</strong> and <strong>sell</strong> signals to the framework.
+
+## Documentation
+
+Read the full documentation at:
+
+[Documentation (WIP)](https://github.com/vardaro/pivotrade)
