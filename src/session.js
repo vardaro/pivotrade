@@ -303,8 +303,8 @@ class Session {
         positions: Object.values(state.positions.open),
         ...state.money
       };
-      // console.log(state.indicators.values)
-      strategy(state.price, account, state.indicators.values);
+      
+      strategy(price, account, state.indicators.values);
     }
 
     console.log(this.store.getState());
