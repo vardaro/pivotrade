@@ -59,7 +59,7 @@ class MACD {
         price = yield 0;
       } else {
         macd = fast_ema - slow_ema;
-        signal = signal_fn.next({ close: macd }); // Gotta send MACD number as a price object.. ema understands
+        signal = signal_fn.next({ close: macd }); // Gotta send MACD number as a price object.. ema looks at input.close as the value to compute off of
         histogram = macd - signal;
 
         // If the MACD finally has data, return it to user

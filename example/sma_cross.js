@@ -18,13 +18,13 @@ session.backtest((price, account, indicators) => {
   let SMA20 = indicators.SMA20;
   let SMA50 = indicators.SMA50;
 
-  // Price is provided in OHLCV format
+  console.log(price);
+  // Price is provided as a Candlestick object
   let cur_price = price.close;
   if (account.positions.length === 0) {
     if (SMA20 > SMA50) {
       let num_shares = Math.floor(account.capital / cur_price);
       let stop_loss = 0.90 * cur_price;
-
       session.buy({ limit: cur_price, quantity: num_shares, stop_loss: stop_loss});
     }
     return;
