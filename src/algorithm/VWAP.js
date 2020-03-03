@@ -17,8 +17,8 @@ class VWAP {
     let total_money_flow = 0;
     let price = yield;
     while (true) {
-      let nicki_minaj = (price.high + price.low + price.close) / 3;
-      let money_flow = price.volume * nicki_minaj;
+      let typical = price.typical_price();
+      let money_flow = price.volume * typical;
 
       total_money_flow = total_money_flow + money_flow;
       total_volume = total_volume + price.volume;

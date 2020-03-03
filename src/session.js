@@ -1,5 +1,7 @@
 const historical_data = require("./util/historical_data");
 const round = require("./util/round");
+const Candlestick = require('./candlestick');
+
 
 const rootReducer = require("./reducers/index");
 const actions = require("./actions/index");
@@ -272,7 +274,16 @@ class Session {
     );
 
     for (let i = 0; i < ohlcv.length; i++) {
-      let price = ohlcv[i];
+      // let price = ohlcv[i];
+      let price = new Candlestick(
+        ohlcv[i].open,
+        ohlcv[i].high,
+        ohlcv[i].low,
+        ohlcv[i].close,
+        ohlcv[i].volume,
+        ohlcv[i].date
+      );
+
 
       this.store.dispatch(actions.price.tick(price));
 

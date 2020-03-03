@@ -1,6 +1,7 @@
-const Candlestick = require("../candlestick");
+const round = require('../util/round'); 
 
 const initial_state = {
+  id: "",
   open: 0.0,
   low: 0.0,
   high: 0.0,
@@ -11,21 +12,22 @@ const initial_state = {
 
 /**
  * Round's out price numbers to 2 digits, returns state
- * @param {obj} state
- * @param {obj} payload
+ * @param {obj} state 
+ * @param {obj} payload 
  */
 const tick = (state, payload) => {
+  let data = {};
 
-  let candle = new Candlestick(
-    payload.open,
-    payload.high,
-    payload.low,
-    payload.close,
-    payload.volume,
-    payload.date
-  );
+  data.id = payload.id;
+  data.low = round(payload.low);
+  data.high = round(payload.high);
+  data.open = round(payload.open);
+  data.close = round(payload.close);
+  data.date = payload.date;
+  data.volume = payload.volume;
 
-  return Object.assign({}, state, candle);
+
+  return Object.assign({}, state, data);
 };
 
 const price = (state = initial_state, action) => {
