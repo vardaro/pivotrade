@@ -7,7 +7,7 @@ Pivotrades requires only a callback function and will handle historical price da
 ## Getting Started
 
 Here is an example implementation of a classic Simple Moving Average (SMA) crossover strategy trading on the S&P ETF. A strategy that involves:
-- Buying <strong>N</strong> shares of a security when it's 20 day moving average crosses above its 50 day moving average.
+- Buying <strong>N</strong> shares of a security when it's 20 day moving average crosses above its 50 day moving average. Set a stop loss at 10% below it's long entry price.
 
 - Selling <strong>N</strong> shares of a security when its 20 day average falls below the 50 day average.
 
