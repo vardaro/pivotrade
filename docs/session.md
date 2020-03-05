@@ -112,28 +112,31 @@ session.backtest((price, account, indicators) => {
 
 ### Session.buy(Object)
 
-```Session.buy()``` executes a buy order on the selected stock and updates the session state accordingly. It takes an Object as a parameter denoting important informatiation about the order.
+`Session.buy()` executes a buy order on the selected stock and updates the session state accordingly. It takes an Object as a parameter denoting important informatiation about the order. Technically it does a limit order.
 
 This will cause a new `Position` object to get pushed to the `account.positions` array.
 
-This function will throw an error if the cost basis of the order exceeds the cash on hand of the account. 
+This function will throw an error if the cost basis of the order exceeds the cash on hand of the account.
 
 ```javascript
 buy_object = {
-    /* The price at which to execute the limit order */
-    limit: 321.21,
+  /* The price at which to execute the limit order */
+  limit: 321.21,
 
-    /* Number of shares to purcahse of the security */
-    quantiity: 100,
+  /* Number of shares to purcahse of the security */
+  quantiity: 100,
 
-    /* You can optionally set a stop_loss price
-     * If the price falls below the stop loss, it will trigger a sell,
-     * incurring a loss.
-     */
-    stop_loss: 300.0
-}
+  /* You can optionally set a stop_loss price
+   * If the price falls below the stop loss, it will trigger a sell,
+   * incurring a loss.
+   * 
+   * I sure hope you like to set stop losses on your trades :)
+   */
+  stop_loss: 300.00
+};
+
+session.buy(buy_object);
 ```
-
 
 ### Session.sell()
 
