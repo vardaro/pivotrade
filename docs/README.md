@@ -61,6 +61,6 @@ Read the full documentation at:
 
 - [Session](/session.md)
 
-- [Candlestick](https://github.com/vardaro/pivotrade)
+- [Candlestick](/candlestick.md)
 
-- [Indicators)](https://github.com/vardaro/pivotrade)
+- [Indicators)](/indicators.md)
