@@ -1,6 +1,6 @@
 ## Pivotrade
 
-Pivotrade is a Node.js backtesting framework for simulating trading strategies on historical quotes. 
+Pivotrade is a Node.js backtesting framework for testing trading strategies on historical price data. 
 
 Pivotrades requires only a callback function and will handle historical price data, performance monitoring, and state management, giving you the freedom to focus more on strategy and less on infrastructure.
 

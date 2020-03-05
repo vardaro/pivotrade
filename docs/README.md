@@ -59,7 +59,7 @@ The user has the power to configure the technical indicators provided by the fra
 
 Read the full documentation at:
 
-- [Session](https://github.com/vardaro/pivotrade)
+- [Session](/session.md)
 
 - [Candlestick](https://github.com/vardaro/pivotrade)
 

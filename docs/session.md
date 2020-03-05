@@ -27,7 +27,6 @@ const session = new Session({
    *
    * Must be in YYYY-MM-DD format.
    */
-
   start_date: "2010-01-01",
   end_date: "2020-01-01",
 
@@ -57,11 +56,11 @@ const session = new Session({
 
 ### Session.backtest(Function(price, account, indicators))
 
-The `Session.backtext()` accepts a callback function that gets executed on every price tick. The callback function accepts 3 parameters:
+The `Session.backtest()` accepts a callback function that gets executed on every price tick. The callback function accepts 3 parameters:
 
-- price
-- account
-- indicators
+- `price`
+- `account`
+- `indicators`
 
 #### Price
 
@@ -75,6 +74,9 @@ Account is an object containing metadata about the users account.
 account {
     /* Array of Position objects */
     positions: []
+
+    /* Cash on hand to trade with */
+    capital: 0.0
 
     /* Dollar amount started with */
     initial_capital: 0.0,
@@ -98,7 +100,7 @@ Indicators is an object containing the most recent values of the indicators you 
 /* Print the current SMA(20) for each candlestick */
 const session = new Session({
   name: "Print SMA(20)",
-  symbol: "SPY",
+  symbol: "AAPL",
   indicators: {
     SMA20: new SMA(20)
   }
@@ -112,7 +114,7 @@ session.backtest((price, account, indicators) => {
 
 ### Session.buy(Object)
 
-`Session.buy()` executes a buy order on the selected stock and updates the session state accordingly. It takes an Object as a parameter denoting important informatiation about the order. Technically it does a limit order.
+`Session.buy()` executes a buy order on the selected stock and updates the session state accordingly. It takes an Object as a parameter denoting information about the order. Technically it does a limit order.
 
 This will cause a new `Position` object to get pushed to the `account.positions` array.
 
@@ -123,21 +125,93 @@ buy_object = {
   /* The price at which to execute the limit order */
   limit: 321.21,
 
-  /* Number of shares to purcahse of the security */
+  /* Number of shares to purchase of the security */
   quantiity: 100,
 
   /* You can optionally set a stop_loss price
    * If the price falls below the stop loss, it will trigger a sell,
    * incurring a loss.
-   * 
+   *
    * I sure hope you like to set stop losses on your trades :)
    */
-  stop_loss: 300.00
+  stop_loss: 300.0
 };
 
 session.buy(buy_object);
 ```
 
-### Session.sell()
+### Session.sell(Object)
+
+`Session.sell()` closes an existing position, and updates the session state accordingly. Technical it does a limit sell.
+
+This will remove the corresponding position from `account.positions`, and remove the stop loss for that order if there was one.
+
+If the position `id` does not relate to an open `Position` it will throw an error.
+
+```javascript
+position = account.positions[0];
+
+sell_object = {
+  /* The position ID of the position you intend to close. */
+  id: position.id,
+
+  /* Limit at which to sell. */
+  limit: 330.0,
+
+  /* Number of shares to sell */
+  quantity: 100
+};
+
+session.sell(sell_object);
+```
 
 ## Examples
+
+Here is an example strategy that tracks the 12-period Exponential Moving Average (EMA).
+
+```javascript
+const Session = require("../index").Session;
+const Algorithm = require("../index").Algorithm;
+const EMA = Algorithm.EMA;
+
+const session = new Session({
+  name: "EMA Support",
+  symbol: "SPY",
+  capital: 25000,
+  start_date: "2019-01-01",
+  end_date: "2020-01-01",
+  indicators: {
+    EMA: new EMA(12)
+  }
+});
+
+session.backtest((price, account, indicators) => {
+  let EMA = indicators.EMA;
+
+  let cur_price = price.close;
+  if (account.positions.length === 0) {
+    if (EMA < cur_price) {
+      let num_shares = Math.floor(account.capital / cur_price);
+      session.buy({ 
+          limit: cur_price, 
+          quantity: num_shares, 
+          stop_loss: EMA 
+      });
+    }
+    return;
+  }
+
+  if (account.positions.length === 1) {
+    let position = account.positions[0];
+    let target = position.cost_basis * 1.1;
+
+    if (position.unrealized_pl > target) {
+      session.sell({
+        id: position.id,
+        limit: cur_price,
+        quantity: position.quantity
+      });
+    }
+  }
+});
+```
