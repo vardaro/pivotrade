@@ -167,7 +167,7 @@ session.sell(sell_object);
 
 ## Examples
 
-Here is an example strategy that tracks the 12-period Exponential Moving Average (EMA).
+Here is an example strategy that tracks the 12-period Exponential Moving Average (EMA). 
 
 ```javascript
 const Session = require("../index").Session;
@@ -187,31 +187,6 @@ const session = new Session({
 
 session.backtest((price, account, indicators) => {
   let EMA = indicators.EMA;
-
-  let cur_price = price.close;
-  if (account.positions.length === 0) {
-    if (EMA < cur_price) {
-      let num_shares = Math.floor(account.capital / cur_price);
-      session.buy({ 
-          limit: cur_price, 
-          quantity: num_shares, 
-          stop_loss: EMA 
-      });
-    }
-    return;
-  }
-
-  if (account.positions.length === 1) {
-    let position = account.positions[0];
-    let target = position.cost_basis * 1.1;
-
-    if (position.unrealized_pl > target) {
-      session.sell({
-        id: position.id,
-        limit: cur_price,
-        quantity: position.quantity
-      });
-    }
-  }
+  console.log(`EMA: ${EMA} Price: ${price.close}`);
 });
 ```
