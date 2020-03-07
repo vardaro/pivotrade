@@ -63,4 +63,6 @@ Read the full documentation at:
 
 - [Candlestick](/candlestick.md)
 
-- [Indicators)](/indicators.md)
+- [Indicators](/indicators.md)
+
+- [Position](/position.md)
