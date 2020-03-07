@@ -16,8 +16,8 @@ Also known as the "Hello World" of algotrading!
 ```javascript
 // node example/sma_cross.js
 
-const Session = require("../index").Session;
-const Algorithm = require("../index").Algorithm;
+const Session = require("pivotrade").Session;
+const Algorithm = require("pivotrade").Algorithm;
 const SMA = Algorithm.SMA;
 
 const session = new Session({

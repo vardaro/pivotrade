@@ -172,8 +172,8 @@ session.sell(sell_object);
 Here is an example strategy that tracks the 12-period Exponential Moving Average (EMA). 
 
 ```javascript
-const Session = require("../index").Session;
-const Algorithm = require("../index").Algorithm;
+const Session = require("pivotrade").Session;
+const Algorithm = require("pivotrade").Algorithm;
 const EMA = Algorithm.EMA;
 
 const session = new Session({

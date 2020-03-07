@@ -23,8 +23,8 @@ The `SMA()` constructors accepts one parameter, a`Number`, indicating how many p
 #### Example
 
 ```javascript
-const Session = require("../index").Session;
-const Algorithm = require("../index").Algorithm;
+const Session = require("pivotrade").Session;
+const Algorithm = require("pivotrade").Algorithm;
 const SMA = Algorithm.SMA;
 
 const session = new Session({
@@ -62,8 +62,8 @@ The `EMA()` constructors accepts one parameter, a`Number`, indicating how many p
 #### Example
 
 ```javascript
-const Session = require("../index").Session;
-const Algorithm = require("../index").Algorithm;
+const Session = require("pivotrade").Session;
+const Algorithm = require("pivotrade").Algorithm;
 const EMA = Algorithm.EMA;
 
 const session = new Session({
@@ -94,8 +94,8 @@ The `VWAP()` constructors accepts no parameters.
 #### Example
 
 ```javascript
-const Session = require("../index").Session;
-const Algorithm = require("../index").Algorithm;
+const Session = require("pivotrade").Session;
+const Algorithm = require("pivotrade").Algorithm;
 const VWAP = Algorithm.VWAP;
 
 const session = new Session({
@@ -150,8 +150,8 @@ stochastic_output = {
 #### Example
 
 ```javascript
-const Session = require("../index").Session;
-const Algorithm = require("../index").Algorithm;
+const Session = require("pivotrade").Session;
+const Algorithm = require("pivotrade").Algorithm;
 const Stochastic = Algorithm.Stochastic;
 
 const session = new Session({
@@ -207,8 +207,8 @@ macd_output = {
 #### Example
 
 ```javascript
-const Session = require("../index").Session;
-const Algorithm = require("../index").Algorithm;
+const Session = require("pivotrade").Session;
+const Algorithm = require("pivotrade").Algorithm;
 const MACD = Algorithm.MACD;
 
 const session = new Session({
