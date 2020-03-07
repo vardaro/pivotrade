@@ -2,13 +2,13 @@
 
 ## About
 
-The `Position` object is the object that gets passed to your strategy callback function, representing all open position tied to your session.
+The `Position` object is the object that gets passed to your strategy callback function, representing all open positions tied to your session.
 
 ## Reference
 
 ### Structure
 
-The `Candlestick` object does have constructor in case you may decide to create your own instances.
+The `Position` object does have constructor in case you may decide to create your own instances.
 
 ```javascript
 position = {

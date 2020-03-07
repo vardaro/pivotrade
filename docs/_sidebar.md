@@ -1,8 +1,6 @@
 * Getting started
 
-  * [Quick start](quickstart.md)
-  * [Examples](more-pages.md)
-  * [Strategies](custom-navbar.md)
+  * [Quick start](README.md)
 
 * Documentation
   * [Session](session.md)

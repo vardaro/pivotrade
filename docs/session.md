@@ -2,11 +2,11 @@
 
 ## About
 
-The `Session` object represents the current backtesting session and provides an interface for the user to configure different variables to introduce or exclude from the trading session.
+The `Session` object represents the current backtesting session and provides an interface for the user to configure their test.
 
-The `Session` executes the user backtesting strategy callback on each candlestick, and injects useful metadata about the current trading session into the context of the strategy callback.
+The `Session` executes the users backtesting strategy callback on each candlestick, and injects metadata about the current trading session into the context of the strategy callback.
 
-It will also attempt to capture the state of the trading session on each candlestick to analyze the strategies performance.
+It will also capture the state of the trading session on each candlestick to analyze your strategies performance.
 
 ## Reference
 
@@ -39,7 +39,7 @@ const session = new Session({
    * candlestick.
    *
    * This property accepts ['d', 'w', 'm']
-   * Adding intraday candlestick will be implemented eventually.
+   * Adding intraday candlesticks will be implemented eventually.
    */
   period: "d",
 
@@ -133,8 +133,6 @@ buy_object = {
   /* You can optionally set a stop_loss price
    * If the price falls below the stop loss, it will trigger a sell,
    * incurring a loss.
-   *
-   * I sure hope you like to set stop losses on your trades :)
    */
   stop_loss: 300.0
 };

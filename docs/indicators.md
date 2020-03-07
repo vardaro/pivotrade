@@ -2,11 +2,11 @@
 
 ## About
 
-Pivotrade only supports a handful of classic Technical Analysis indicators, however these are the one I personally find most useful when creating trading algorithms, `VWAP` in particular.
+Pivotrade only supports a handful of classic Technical Analysis indicators, however these are the one I personally find most useful when creating trading algorithms. I do intend add pivot points in the future, as I use them alot, hence the name.
 
 When including an indicator in your strategy, a property in the `indicators` object parameter will be created, and contain the latest value of that indicator for that candlestick.
 
-It's important to note, if the indicator has not seen enough price data to compute its first value, it will return `0.0`. For example, the `Stochastic` oscilator requires 14 periods of price data before computing its initial value, therefore the first 13 periods `Stochastic` will be `0.0`.
+It's important to note, if the indicator has not seen enough price data to compute its first value, it will return `0.0`. For example, the `Stochastic` oscilator requires 14 periods of price data before computing its initial value, therefore the first 13 periods `Stochastic` will be `0.0`, and the first 2 periods of the Stochastics 3-tick smoothing line will be `0.0`. In hindsight, this was a pretty poor design decision, as some indicators can return 0 in very extreme markets, the RSI, for example. In the future I intend to replace the initial values for indicators to something like `undefined`.
 
 ## Reference
 
@@ -16,7 +16,7 @@ The `Simple Moving Average` implementation is the traditionally computed moving 
 
 ![img](http://latex.codecogs.com/gif.latex?SMA%28n%29%20%3D%20%5Cfrac%7B1%7D%7Bn%7D%7B%5Csum_%7Bi%3D0%7D%5E%7Bn-1%7D%7BP_%7Bc-i%7D%7D%7D)
 
-It takes the average of the last N <b>close</b> prices. SMA's are useful for identifying support and resistance levels of a security.
+It just takes the average of the last N <b>close</b> prices.
 
 The `SMA()` constructors accepts one parameter, a`Number`, indicating how many periods to factor into the MA. For example, `SMA(20)` will present the 20 candle MA.
 
@@ -55,9 +55,9 @@ n = number of days in EMA
 k = 2 / (n + 1)
 ```
 
-It takes the average of the last N <b>close</b> prices. EMA's are useful for identifying intraday support and resistance levels of a security as it applies extra weight to more recent data.
+It takes the exponential average of the recent closing prices, recent price activity is weighted more in the value.
 
-The `EMA()` constructors accepts one parameter, a`Number`, indicating how many periods to factor into the initial MA. For example, `EMA(20)` will use the 20 candle SMA to compute the first EMA.
+The `EMA()` constructors accepts one parameter, a `Number`, indicating how many periods to factor into the initial MA. For example, `EMA(20)` will use the 20 candle SMA to compute the first EMA.
 
 #### Example
 
@@ -128,7 +128,7 @@ H14 = Higher 14 period high
 
 It's generally accepted if K > 80, the security is over overbought, if K < 30, the security is oversold. K will always be between 0 and 100, and fluctuates depending historical momentum. The Stochastic valued is typically compared to D, which is the 3 period EMA of K.
 
-The `Stochastic()` constructors accepts two optional parameters.
+The `Stochastic()` constructor accepts two optional parameters.
 
 The first of which is a `Number` denoting the period of price data to consider for highs and lows. It defaults to 14.
 
@@ -171,7 +171,7 @@ session.backtest((price, account, indicators) => {
 
 ### Moving Average Convergence Divergence
 
-The `MACD` oscillator implementation is the traditionally computed MACD, that being just the difference between the securities 12 and 26 exponential moving averages. The Signal is the 9 period EMA of the MACD. Buy and Sell signal are produced when the MACD and Signal line cross.
+The `MACD` oscillator implementation is the traditionally computed MACD, that being just the difference between the securities 12 and 26 exponential moving averages. The Signal is the 9 period EMA of the MACD. The histogram is the difference between the MACD and signal. Buy and Sell signals are produced when the MACD and Signal line cross.
 
 ![img](http://latex.codecogs.com/gif.latex?MACD%20%3D%20EMA%2812%29%20-%20EMA%2826%29)
 
@@ -179,14 +179,14 @@ The `MACD` oscillator implementation is the traditionally computed MACD, that be
 
 The `MACD()` constructors accepts three optional parameters.
 
-The first of which is a `Number` denoting the period of the fast EMA.
+The first of which is a `Number` denoting the period of the fast EMA. Defaults to 12.
 
-The second of which is a `Number`, denoting the period of the slow EMA.
+The second of which is a `Number`, denoting the period of the slow EMA. Defaults to 26.
 
-The third of which is a `Number`, denoting the period of the slow Signal line (EMA of the MACD). 
+The third of which is a `Number`, denoting the period of the slow Signal line (EMA of the MACD). Defaults to 9.
 
 
-The Stochastic returns an object, containing the most recent values of MACD, Signal, histogram, fast EMA, slow EMA.
+The MACD returns an object, containing the most recent values of MACD, Signal, histogram, fast EMA, slow EMA.
 
 ```javascript
 macd_output = {
