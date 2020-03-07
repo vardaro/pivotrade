@@ -1,5 +1,7 @@
 # Candlestick
 
+## About
+
 The `Candlestick` object is the price object that gets passed to your strategy callback function.
 
 ## Reference

@@ -1,5 +1,7 @@
 # Session
 
+## About
+
 The `Session` object represents the current backtesting session and provides an interface for the user to configure different variables to introduce or exclude from the trading session.
 
 The `Session` executes the user backtesting strategy callback on each candlestick, and injects useful metadata about the current trading session into the context of the strategy callback.
