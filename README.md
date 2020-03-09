@@ -10,6 +10,10 @@ Feel free to visit the [documentation](https://vardaro.me/pivotrade)
 
 ## Getting Started
 
+Download from NPM 
+
+https://www.npmjs.com/package/pivotrade
+
 ```
 > npm i pivotrade
 ```
